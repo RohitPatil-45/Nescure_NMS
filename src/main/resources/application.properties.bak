@@ -1,0 +1,25 @@
+jdbc.driverClassName = com.mysql.jdbc.Driver
+jdbc.url = jdbc:mysql://localhost:3306/nmsvlx
+jdbc.username =root
+jdbc.password =root
+hibernate.dialect = org.hibernate.dialect.MySQL5Dialect
+spring.jpa.hibernate.ddl-auto=update
+hibernate.show_sql = true
+hibernate.format_sql = true
+
+#connection pooling
+hibernate.c3p0.min_size:5
+hibernate.c3p0.max_size:20
+hibernate.c3p0.timeout:300
+hibernate.c3p0.max_statements:50
+hibernate.c3p0.idle_test_period:3000
+
+#
+PARAMETER:8002
+TCP:5555
+PATCH:5557
+ATS_SERVER:192.168.0.170
+OPERATING_SYSTEM:1337
+FILE_PULL:5561
+FILE_PUSH:5565
+DATABASE_TYPE:mysql
