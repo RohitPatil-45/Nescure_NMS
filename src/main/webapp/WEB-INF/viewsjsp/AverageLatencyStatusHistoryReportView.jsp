@@ -7,7 +7,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Device Average Latency Report | DataTables</title>
+<title>Device Average Latency Report '${fdate}' - '${tdate}'</title>
 
 <!-- Google Font: Source Sans Pro -->
 <!-- <link rel="stylesheet" -->
@@ -66,7 +66,8 @@
 						<div class="col-sm-6">
 							<ol class="breadcrumb float-sm-right">
 								<li class="breadcrumb-item"><a
-									href="<%=request.getContextPath()%>/nodeReport/avgLatencyStatusHistoryReportForm">Device Average Latency Report</a></li>
+									href="<%=request.getContextPath()%>/nodeReport/avgLatencyStatusHistoryReportForm">Device
+										Average Latency Report</a></li>
 								<li class="breadcrumb-item active">View Report</li>
 							</ol>
 						</div>

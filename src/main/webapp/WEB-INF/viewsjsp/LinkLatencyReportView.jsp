@@ -7,7 +7,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Link Latency Report | DataTables</title>
+<title>Link Latency Report '${fdate}' - '${tdate}'</title>
 
 <!-- Google Font: Source Sans Pro -->
 <!-- <link rel="stylesheet" -->
@@ -110,10 +110,10 @@
 
 												<th>Status</th>
 												<th>Timestamp</th>
-<!-- 												<th>Timestamp Epoch</th> -->
+												<!-- 												<th>Timestamp Epoch</th> -->
 												<th>Latency</th>
 												<th>Packet Drop</th>
-<!-- 												<th>Working Hour Flag</th> -->
+												<!-- 												<th>Working Hour Flag</th> -->
 												<th>Jitter</th>
 											</tr>
 										</thead>
@@ -133,10 +133,10 @@
 												<th>Group Name</th>
 												<th>Status</th>
 												<th>Timestamp</th>
-<!-- 												<th>Timestamp Epoch</th> -->
+												<!-- 												<th>Timestamp Epoch</th> -->
 												<th>Latency</th>
 												<th>Packet Drop</th>
-<!-- 												<th>Working Hour Flag</th> -->
+												<!-- 												<th>Working Hour Flag</th> -->
 												<th>Jitter</th>
 											</tr>
 										</tfoot>

@@ -7,7 +7,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Device SLA Report | DataTables</title>
+<title>Device SLA Report '${fdate}' - '${tdate}'</title>
 
 <!-- Google Font: Source Sans Pro -->
 <!-- <link rel="stylesheet" -->
@@ -93,9 +93,9 @@
 												<th>Group Name</th>
 												<th>UPTIME</th>
 												<th>DOWN</th>
-												<th>UPTIME Minutes</th>
-												<th>DOWN Minutes</th>
-												<th>Total Minutes</th>
+												<th>UPTIME Hours</th>
+												<th>DOWN Hours</th>
+												<th>Total Hours</th>
 												<th>UPTIME(%)</th>
 												<th>DOWNTIME(%)</th>
 												<th>YEARLY COST</th>
@@ -117,9 +117,9 @@
 												<th>Group Name</th>
 												<th>UPTIME</th>
 												<th>DOWN</th>
-												<th>UPTIME Minutes</th>
-												<th>DOWN Minutes</th>
-												<th>Total Minutes</th>
+												<th>UPTIME Hours</th>
+												<th>DOWN Hours</th>
+												<th>Total Hours</th>
 												<th>UPTIME(%)</th>
 												<th>DOWNTIME(%)</th>
 												<th>YEARLY COST</th>

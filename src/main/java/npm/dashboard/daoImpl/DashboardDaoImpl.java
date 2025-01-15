@@ -100,7 +100,7 @@ public class DashboardDaoImpl extends AbstractDao<Integer, NodeMonitoringModel> 
 				if (row[0].equals("Down")) {
 					down_count = row[1].toString();
 				}
-				if (row[0].equals("Warrning")) {
+				if (row[0].equals("Warning")) {
 					warrning_count = row[1].toString();
 				}
 				// array.put("status:"+row[0]);

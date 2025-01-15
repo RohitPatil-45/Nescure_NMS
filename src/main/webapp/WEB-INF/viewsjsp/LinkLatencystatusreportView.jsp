@@ -7,7 +7,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Link Status Report | DataTables</title>
+<title>Link Status Report '${fdate}' - '${tdate}'</title>
 
 <!-- Google Font: Source Sans Pro -->
 <!-- <link rel="stylesheet" -->

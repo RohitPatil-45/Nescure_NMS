@@ -3214,6 +3214,18 @@ public class NodeReportDaoImpl extends AbstractDao<Integer, AddNodeModel> implem
 				double UptimeTotalhours = (double) uptime;
 				double DowntimeTotalhours = (double) downtime;
 
+				try {
+					UptimeTotalhours = UptimeTotalhours / 3600.0;
+				} catch (Exception e) {
+					System.out.println("Exception:" + e);
+				}
+
+				try {
+					DowntimeTotalhours = DowntimeTotalhours / 3600.0;
+				} catch (Exception e) {
+					System.out.println("Exception:" + e);
+				}
+
 				String formattedUptimehours = String.format("%.2f", UptimeTotalhours);
 				String formattedDowntimehours = String.format("%.2f", DowntimeTotalhours);
 				// Parse the formatted strings back to doubles for calculation
@@ -4136,6 +4148,18 @@ public class NodeReportDaoImpl extends AbstractDao<Integer, AddNodeModel> implem
 
 				double UptimeTotalhours = (double) uptime;
 				double DowntimeTotalhours = (double) downtime;
+
+				try {
+					UptimeTotalhours = UptimeTotalhours / 3600.0;
+				} catch (Exception e) {
+					System.out.println("Exception:" + e);
+				}
+
+				try {
+					DowntimeTotalhours = DowntimeTotalhours / 3600.0;
+				} catch (Exception e) {
+					System.out.println("Exception:" + e);
+				}
 
 				String formattedUptimehours = String.format("%.2f", UptimeTotalhours);
 				String formattedDowntimehours = String.format("%.2f", DowntimeTotalhours);
