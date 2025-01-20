@@ -66,18 +66,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
 								<li><a
 									href="<%=request.getContextPath()%>/dashboard/summaryPage"
 									class="dropdown-item">Home Dashboard</a></li>
-								<li class="dropdown-divider"></li>
 
-								<li><a
-									href="<%=request.getContextPath()%>/dashboard/sysLogEventDashboard"
-									class="dropdown-item">Event Dashboard</a></li>
 
 
 								<%
 									}
 									if (dashboardScope.contains("Event_Dashboard")) {
 								%>
+								<li class="dropdown-divider"></li>
 
+								<li><a
+									href="<%=request.getContextPath()%>/dashboard/sysLogEventDashboard"
+									class="dropdown-item">Event Dashboard</a></li>
 								<%
 									}
 
@@ -653,6 +653,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
 									</ul></li>
 
 
+
+
+
+								<%
+									}
+									if (reportScope.contains("Working_Hours_Reports")) {
+								%>
 								<li class="dropdown-submenu dropdown-hover"><a
 									id="adminDropdownSubMenu1" href="#" role="button"
 									data-toggle="dropdown" aria-haspopup="true"
@@ -716,10 +723,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
 											class="dropdown-item">Link AVG Bandwidth Report</a></li>
 
 									</ul></li>
-
-
-
-
 								<%
 									}
 									if (reportScope.contains("Top_Talker_Report")) {

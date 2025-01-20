@@ -1436,9 +1436,7 @@ public class MasterDaoImpl extends AbstractDao<Integer, UserMasterModel> impleme
 					String groupClause = String.join("','", groupArray);
 					String locationClause = String.join("','", locationArray);
 
-					String userScopeFilter = String.format(
-							"add_node.GROUP_NAME IN ('%s') AND add_node.LOCATION IN ('%s')", groupClause,
-							locationClause);
+					String userScopeFilter = String.format("add_node.GROUP_NAME IN ('%s')", groupClause);
 
 					q.setParameter("userScope", userScopeFilter);
 
@@ -1467,9 +1465,11 @@ public class MasterDaoImpl extends AbstractDao<Integer, UserMasterModel> impleme
 					String groupClause = String.join("','", groupArray);
 					String locationClause = String.join("','", locationArray);
 
-					String userScopeFilter = String.format(
-							"add_node.GROUP_NAME IN ('%s') AND add_node.LOCATION IN ('%s')", groupClause,
-							locationClause);
+//					String userScopeFilter = String.format(
+//							"add_node.GROUP_NAME IN ('%s') AND add_node.LOCATION IN ('%s')", groupClause,
+//							locationClause);
+
+					String userScopeFilter = String.format("add_node.GROUP_NAME IN ('%s')", groupClause);
 					userSData.setUSER_SCOPE(userScopeFilter);
 					getSession().save(userSData);
 					result = "success";
@@ -2699,7 +2699,7 @@ public class MasterDaoImpl extends AbstractDao<Integer, UserMasterModel> impleme
 	public String GetSpeedTestDetails(String srcIP, String intname) {
 		StringBuilder strb = new StringBuilder();
 		StringBuilder strOtherB = new StringBuilder();
-		boolean isSSHEnable=true;
+		boolean isSSHEnable = true;
 
 		// TODO Auto-generated method stub
 		String responce_data = "fail";
@@ -2734,13 +2734,12 @@ public class MasterDaoImpl extends AbstractDao<Integer, UserMasterModel> impleme
 //	 String command = "show system snmp sysinfo";
 		if (intname.trim().equalsIgnoreCase("wan")) {
 			command = "iperf3 -c 172.31.31.31 -p 5000";
-		} else  {
+		} else {
 			command = "iperf3 -c 172.31.0.1 -p 5000";
 		}
 		Timestamp timestampNow = new Timestamp(System.currentTimeMillis());
 		String datetime = String.valueOf(timestampNow.getTime());
 		System.out.println("Data:" + ipAddress + ":" + username + ":" + password + ":" + command + ":" + datetime);
-
 
 		InputStream input = null;
 		try {
@@ -2771,57 +2770,50 @@ public class MasterDaoImpl extends AbstractDao<Integer, UserMasterModel> impleme
 			InputStream in = channel.getInputStream();
 			channel.connect();
 
-			
 			String line;
 			// Set up BufferedWriter to write output to a file
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-			//BufferedWriter writer = new BufferedWriter(new FileWriter(log9));
-			boolean isLinePresent=false;
+			// BufferedWriter writer = new BufferedWriter(new FileWriter(log9));
+			boolean isLinePresent = false;
 			while ((line = reader.readLine()) != null) {
 				System.out.println(line);
-				  strb.append(line);
-	                strb.append("\n");
-	                
-	                if(line.contains("- - - - - -"))
-	                {
-	                	isLinePresent=true;
-	                }
-	                if(isLinePresent)
-	                {
-	                	
-	                	//strOtherB.append(line);
-	                	if (line.contains("iperf"))
-	                	{
-	                		
-	                	}
-	                	else
-	                	{
-	                	strOtherB.append(line.replace(" ", "&nbsp;") + "<br>");
-	                	}
-	                	//strOtherB.append("\n");
-	                }
-	                
-	               // iperf Done.
-	                	
-	                
-				//writer.write(line);
-				//if (!line.equalsIgnoreCase("iperf done.")) {
-				//	builder.append(line.replace(" ", "&nbsp;") + "<br>");
-				//}
-				//writer.newLine(); // Write the output to the file
+				strb.append(line);
+				strb.append("\n");
+
+				if (line.contains("- - - - - -")) {
+					isLinePresent = true;
+				}
+				if (isLinePresent) {
+
+					// strOtherB.append(line);
+					if (line.contains("iperf")) {
+
+					} else {
+						strOtherB.append(line.replace(" ", "&nbsp;") + "<br>");
+					}
+					// strOtherB.append("\n");
+				}
+
+				// iperf Done.
+
+				// writer.write(line);
+				// if (!line.equalsIgnoreCase("iperf done.")) {
+				// builder.append(line.replace(" ", "&nbsp;") + "<br>");
+				// }
+				// writer.newLine(); // Write the output to the file
 
 			}
 
 			// Close the channel and session
-			//writer.close();
+			// writer.close();
 			reader.close();
 			channel.disconnect();
 			session.disconnect();
 
 		} catch (Exception e) {
 			System.out.println("Exception SSH:" + e);
-			isSSHEnable=false;
-			strb.append("Error:"+e.toString());
+			isSSHEnable = false;
+			strb.append("Error:" + e.toString());
 		}
 
 		finally {
@@ -2832,29 +2824,25 @@ public class MasterDaoImpl extends AbstractDao<Integer, UserMasterModel> impleme
 			}
 
 		}
-		
-		
-		 StringBuilder speedExactOP=new StringBuilder();
-         
-		if(isSSHEnable)
-		{
-		  String speedoutput = strb.toString();
-          // Regular expressions to find sender and receiver bitrate
-		  try
-		  {
-			  
-			  
-			  String senderRegex = "\\[\\s*\\d+\\]   0\\.00-10\\.00\\s+sec\\s+(\\d+\\.?\\d*\\s+[KMGT]Bytes)\\s+(\\d+\\.?\\d*\\s+[KMG]bits/sec)\\s+\\d+\\s+sender";
-		        //String receiverRegex = "\\[\\s*\\d+\\]   0\\.00-10\\.\\d+\\s+sec\\s+(\\d+\\.?\\d*\\s+[KMGT]Bytes)\\s+(\\d+\\.?\\d*\\s+[KMG]bits/sec)\\s+receiver";
-		        String receiverRegex = "\\[\\s*\\d+\\]   \\d+\\.\\d+-\\d+\\.\\d+\\s+sec\\s+(\\d+\\.?\\d*\\s+[KMGT]Bytes)\\s+(\\d+\\.?\\d*\\s+[KMG]bits/sec)\\s+receiver";
 
-		        // Extract sender data
-		        Matcher senderMatcher = Pattern.compile(senderRegex).matcher(speedoutput);
-		        
-		        Matcher receiverMatcher = Pattern.compile(receiverRegex).matcher(speedoutput);
-		     
-		        
-		        // Extract receiver data
+		StringBuilder speedExactOP = new StringBuilder();
+
+		if (isSSHEnable) {
+			String speedoutput = strb.toString();
+			// Regular expressions to find sender and receiver bitrate
+			try {
+
+				String senderRegex = "\\[\\s*\\d+\\]   0\\.00-10\\.00\\s+sec\\s+(\\d+\\.?\\d*\\s+[KMGT]Bytes)\\s+(\\d+\\.?\\d*\\s+[KMG]bits/sec)\\s+\\d+\\s+sender";
+				// String receiverRegex = "\\[\\s*\\d+\\]
+				// 0\\.00-10\\.\\d+\\s+sec\\s+(\\d+\\.?\\d*\\s+[KMGT]Bytes)\\s+(\\d+\\.?\\d*\\s+[KMG]bits/sec)\\s+receiver";
+				String receiverRegex = "\\[\\s*\\d+\\]   \\d+\\.\\d+-\\d+\\.\\d+\\s+sec\\s+(\\d+\\.?\\d*\\s+[KMGT]Bytes)\\s+(\\d+\\.?\\d*\\s+[KMG]bits/sec)\\s+receiver";
+
+				// Extract sender data
+				Matcher senderMatcher = Pattern.compile(senderRegex).matcher(speedoutput);
+
+				Matcher receiverMatcher = Pattern.compile(receiverRegex).matcher(speedoutput);
+
+				// Extract receiver data
 //		          Matcher receiverMatcher = Pattern.compile(receiverRegex).matcher(speedoutput);
 //		          if (receiverMatcher.find()) {
 //		        	  System.out.println("updated Download: " + receiverMatcher.group(2));
@@ -2863,49 +2851,44 @@ public class MasterDaoImpl extends AbstractDao<Integer, UserMasterModel> impleme
 //		        	  speedExactOP.append("Download : " + receiverMatcher.group(2));
 //		              
 //		          }
-		          
-		          
-          if (senderMatcher.find()) {
-             // System.out.println("Sender Transfer: " + senderMatcher.group(1));
-        	  
-        	  speedExactOP.append("Upload : " + senderMatcher.group(2));
-        	  speedExactOP.append("<br>");
-        	 
-              System.out.println("updated Uploadd: " + senderMatcher.group(2));
-          }
 
-          if (receiverMatcher.find()) {
-	            //System.out.println("Receiver Transfer: " + receiverMatcher.group(1));
-	           // System.out.println("Receiver Bitrate: " + receiverMatcher.group(2));
-	        	speedExactOP.append("Download : " + receiverMatcher.group(2));
-	        }
-          speedExactOP.append("<br>");
-          speedExactOP.append(strOtherB);
-          
-		  }
-		  catch(Exception e)
-		  {
-			  System.out.println("Exceptionnn: " + e);
-		  }
-         // return speedExactOP.toString();
-		}
-		else
-		{
-			speedExactOP=strb;
-			
+				if (senderMatcher.find()) {
+					// System.out.println("Sender Transfer: " + senderMatcher.group(1));
+
+					speedExactOP.append("Upload : " + senderMatcher.group(2));
+					speedExactOP.append("<br>");
+
+					System.out.println("updated Uploadd: " + senderMatcher.group(2));
+				}
+
+				if (receiverMatcher.find()) {
+					// System.out.println("Receiver Transfer: " + receiverMatcher.group(1));
+					// System.out.println("Receiver Bitrate: " + receiverMatcher.group(2));
+					speedExactOP.append("Download : " + receiverMatcher.group(2));
+				}
+				speedExactOP.append("<br>");
+				speedExactOP.append(strOtherB);
+
+			} catch (Exception e) {
+				System.out.println("Exceptionnn: " + e);
+			}
+			// return speedExactOP.toString();
+		} else {
+			speedExactOP = strb;
+
 		}
 		return speedExactOP.toString();
-		
-	}
-    private static double extractSpeed(String output, String pattern) {
-        Pattern regex = Pattern.compile(pattern);
-        Matcher matcher = regex.matcher(output);
-        if (matcher.find()) {
-            return Double.parseDouble(matcher.group(1));
-        }
-        return 0.0; // Return 0.0 if no match is found
-    }
 
+	}
+
+	private static double extractSpeed(String output, String pattern) {
+		Pattern regex = Pattern.compile(pattern);
+		Matcher matcher = regex.matcher(output);
+		if (matcher.find()) {
+			return Double.parseDouble(matcher.group(1));
+		}
+		return 0.0; // Return 0.0 if no match is found
+	}
 
 	public String saveSLADataMaster(String from_date, String to_date, List<String> dayslist) {
 
