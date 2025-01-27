@@ -78,25 +78,21 @@
 	href="<%=request.getContextPath()%>/webtemplate/plugins/daterangepicker/daterangepicker.css">
 
 
-<link rel="stylesheet"
-	href="<%=request.getContextPath()%>/webtemplate/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+<!-- <link rel="stylesheet" -->
+<%-- 	href="<%=request.getContextPath()%>/webtemplate/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css"> --%>
 
 <!-- <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/webtemplate/datatablesCSS/jquery.dataTables.css">-->
 
 <!-- DataTables -->
 <link rel="stylesheet"
-	href="<%=request.getContextPath()%>/webtemplate/datatables.net-bs/css/dataTables.bootstrap.min.css">
+	href="<%=request.getContextPath()%>/webtemplate/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet"
-	href="<%=request.getContextPath()%>/webtemplate/datatables.net-bs/css/fixedHeader.dataTables.css">
+	href="<%=request.getContextPath()%>/webtemplate/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
 <link rel="stylesheet"
-	href="<%=request.getContextPath()%>/webtemplate/datatables.net-bs/css/jquery.dataTables.css">
-<link rel="stylesheet"
-	href="<%=request.getContextPath()%>/webtemplate/datatables.net-bs/css/select.dataTables.min.css">
-<link rel="stylesheet"
-	href="<%=request.getContextPath()%>/webtemplate/datatables.net-bs/css/buttons.dataTables.min.css">
-<link rel="stylesheet"
-	href="<%=request.getContextPath()%>/webtemplate/datatables.net-bs/css/colReorder.dataTables.min.css">
+	href="<%=request.getContextPath()%>/webtemplate/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+	<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/webtemplate/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
 
 </head>
 
@@ -377,8 +373,10 @@ src="<%=request.getContextPath()%>/webtemplate/datatablesJS/jquery.dataTables.js
 
 	<!-- DataTables -->
 	<script
-		src="<%=request.getContextPath()%>/webtemplate/datatables.net/js/jquery.dataTables.min.js"></script>
-	<%-- <script src="<%=request.getContextPath()%>/webtemplate/datatables.net-bs/js/dataTables.bootstrap.min.js"></script> --%>
+		src="<%=request.getContextPath()%>/webtemplate/plugins/datatables/jquery.dataTables.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/webtemplate/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+	<%-- 	<script src="<%=request.getContextPath()%>/webtemplate/datatables.net-bs/js/dataTables.bootstrap.min.js"></script> --%>
 	<script
 		src="<%=request.getContextPath()%>/webtemplate/datatables.net/js/dataTables.fixedHeader.js"></script>
 
@@ -388,33 +386,32 @@ src="<%=request.getContextPath()%>/webtemplate/datatablesJS/jquery.dataTables.js
 	<script
 		src="<%=request.getContextPath()%>/webtemplate/datatables.net-bs/js/dataTables.colReorder.min.js"></script>
 	<script
-		src="<%=request.getContextPath()%>/webtemplate/datatables.net-bs/js/dataTables.buttons.min.js"></script>
+		src="<%=request.getContextPath()%>/webtemplate/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/webtemplate/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
 	<script
 		src="<%=request.getContextPath()%>/webtemplate/datatables.net-bs/js/jszip.min.js"></script>
-
-	<script
-		src="<%=request.getContextPath()%>/webtemplate/datatables.net-bs/js/vfs_fonts.js"></script>
-	<script
-		src="<%=request.getContextPath()%>/webtemplate/datatables.net-bs/js/buttons.html5.min.js"></script>
-	<script
-		src="<%=request.getContextPath()%>/webtemplate/datatables.net-bs/js/buttons.print.min.js"></script>
 
 
 	<script
 		src="<%=request.getContextPath()%>/webtemplate/plugins/inputmask/jquery.inputmask.min.js"></script>
-	<script src="<%=request.getContextPath()%>/webtemplate/js/highstock.js"></script>
 
+	<script
+		src="<%=request.getContextPath()%>/webtemplate/plugins/pdfmake/pdfmake.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/webtemplate/plugins/pdfmake/vfs_fonts.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/webtemplate/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/webtemplate/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/webtemplate/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 
 	<!-- Include jsPDF library -->
-	<script type="text/javascript"
-		src="<%=request.getContextPath()%>/webtemplate/js/jspdf.umd.min.js"></script>
+
 
 	<!-- Include html2pdf library -->
-	<script type="text/javascript"
-		src="<%=request.getContextPath()%>/webtemplate/js/html2pdf.bundle.js"></script>
 
-	<script type="text/javascript"
-		src="<%=request.getContextPath()%>/webtemplate/js/html3canvas.min.js"></script>
 	<script
 		src="<%=request.getContextPath()%>/custom_js/InterfaceipAssign.js"></script>
 

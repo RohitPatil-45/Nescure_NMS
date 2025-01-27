@@ -21,7 +21,7 @@ function logoutsaveonclick() {
 window.onload = function() {
 
 	allCount();
-	setInterval(allCount, 20000);
+	setInterval(allCount, 300000);
 
 	// Node Composition
 
@@ -58,53 +58,55 @@ window.onload = function() {
 
 	// Device Down Summary Listing
 
-	var l = window.location;
-	var base_url = l.protocol + "//" + l.host + "/" + l.pathname.split('/')[1];
-	var serviceUrl = base_url + "/dashboard/deviceSummaryList";
-	$.ajax({
-		type : 'GET',
-		url : serviceUrl,
-		dataType : 'json',
-		success : function(data) {
-			// alert(data);
-
-			var table = $('#deviceSummary').DataTable({
-				lengthChange : false,
-				autoWidth : false,
-				data : data,
-				"pageLength" : 5,
-				scrollX : true,
-				scrollY : true,
-				scrollY : '150px'
-			});
-
-		}
-	});
+	// var l = window.location;
+	// var base_url = l.protocol + "//" + l.host + "/" +
+	// l.pathname.split('/')[1];
+	// var serviceUrl = base_url + "/dashboard/deviceSummaryList";
+	// $.ajax({
+	// type : 'GET',
+	// url : serviceUrl,
+	// dataType : 'json',
+	// success : function(data) {
+	// // alert(data);
+	//
+	// var table = $('#deviceSummary').DataTable({
+	// lengthChange : false,
+	// autoWidth : false,
+	// data : data,
+	// "pageLength" : 5,
+	// scrollX : true,
+	// scrollY : true,
+	// scrollY : '150px'
+	// });
+	//
+	// }
+	// });
 
 	// Link Up Down Count
 
-	var l = window.location;
-	var base_url = l.protocol + "//" + l.host + "/" + l.pathname.split('/')[1];
-	var serviceUrl = base_url + "/dashboard/linkSummaryList";
-	$.ajax({
-		type : 'GET',
-		url : serviceUrl,
-		dataType : 'json',
-		success : function(data) {
-			// alert(data);
-
-			var table = $('#linkSummary').DataTable({
-				lengthChange : false,
-				autoWidth : false,
-				data : data,
-				"pageLength" : 10,
-				scrollX : true,
-				scrollY : true,
-				scrollY : '150px'
-			});
-
-		}
-	});
+	// var l = window.location;
+	// var base_url = l.protocol + "//" + l.host + "/" +
+	// l.pathname.split('/')[1];
+	// var serviceUrl = base_url + "/dashboard/linkSummaryList";
+	// $.ajax({
+	// type : 'GET',
+	// url : serviceUrl,
+	// dataType : 'json',
+	// success : function(data) {
+	// // alert(data);
+	//
+	// var table = $('#linkSummary').DataTable({
+	// lengthChange : false,
+	// autoWidth : false,
+	// data : data,
+	// "pageLength" : 10,
+	// scrollX : true,
+	// scrollY : true,
+	// scrollY : '150px'
+	// });
+	//
+	// }
+	// });
 }
 
 // Get Node Details on Model

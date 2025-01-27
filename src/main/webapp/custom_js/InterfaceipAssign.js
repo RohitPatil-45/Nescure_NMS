@@ -64,14 +64,16 @@ function getdataofipassign(){
 			function(data4) {
 				
 				  var table = $("#interfaIpAssignTable").DataTable({
-				        lengthChange: false,
-				        autoWidth: false,
-				        data: data4,
-				        pageLength: 5,
-				        scrollX: true,
-				        scrollY: true,
-				      });
-				      table.buttons().container().appendTo("#interfaIpAssignTable_wrapper .col-sm-6:eq(0)");
+				        "lengthChange": false,
+				        "autoWidth": false,
+				        "data": data4,
+				        "pageLength": 5,
+				        "scrollX": true,
+				        "scrollY": true,
+				        "buttons" : [ "copy", "csv", "excel", "pdf", "print",
+							"colvis" ]
+				      }).buttons().container().appendTo(
+						'#interfaIpAssignTable_wrapper .col-md-6:eq(0)');
 				
 			});
 	

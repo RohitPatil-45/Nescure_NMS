@@ -718,44 +718,41 @@ public class InterfaceReportDaoImpl extends AbstractDao<Integer, AddNodeModel> i
 	}
 
 	public JSONArray groupSummary(String userScopeData) {
-		JSONArray arrayData = null;
 		JSONArray arrayMain = new JSONArray();
-		Query query = getSession()
-				.createSQLQuery("SELECT add_node.GROUP_NAME, COUNT(*) " + "FROM add_node add_node, node_monitoring nm "
-						+ "WHERE add_node.DEVICE_IP = nm.NODE_IP AND add_node.MONITORING_PARAM='Yes'" + " AND "
-						+ userScopeData + "GROUP BY add_node.GROUP_NAME");
+
+		// Single query to fetch all required data at once
+		Query query = getSession().createSQLQuery("SELECT add_node.GROUP_NAME, " + "       COUNT(*) AS totalNodes, "
+				+ "       SUM(CASE WHEN nm.NODE_STATUS = 'Up' THEN 1 ELSE 0 END) AS upNodes, "
+				+ "       SUM(CASE WHEN nm.NODE_STATUS = 'Down' THEN 1 ELSE 0 END) AS downNodes, "
+				+ "       SUM(CASE WHEN nm.NODE_STATUS = 'Warning' THEN 1 ELSE 0 END) AS warningNodes "
+				+ "FROM add_node add_node " + "JOIN node_monitoring nm ON add_node.DEVICE_IP = nm.NODE_IP "
+				+ "WHERE add_node.MONITORING_PARAM = 'Yes' AND " + userScopeData + " GROUP BY add_node.GROUP_NAME");
+
 		List<Object[]> data = query.list();
-		for (Object[] a : data) {
-			arrayData = new JSONArray();
-			arrayData.put(a[0]);
 
-			BigInteger TotalNode = (BigInteger) getSession().createSQLQuery(
-					"SELECT COUNT(*) FROM  add_node add_node, node_monitoring nm WHERE nm.NODE_IP = add_node.DEVICE_IP AND add_node.GROUP_NAME = '"
-							+ a[0] + "'")
-					.getSingleResult();
-			BigInteger upNode = (BigInteger) getSession().createSQLQuery(
-					"SELECT COUNT(*) FROM  add_node add_node, node_monitoring nm WHERE nm.NODE_IP = add_node.DEVICE_IP AND nm.NODE_STATUS = 'Up' AND add_node.GROUP_NAME = '"
-							+ a[0] + "'")
-					.getSingleResult();
-			BigInteger downNode = (BigInteger) getSession().createSQLQuery(
-					"SELECT COUNT(*) FROM  add_node add_node, node_monitoring nm WHERE nm.NODE_IP = add_node.DEVICE_IP AND nm.NODE_STATUS = 'Down' AND add_node.GROUP_NAME = '"
-							+ a[0] + "'")
-					.getSingleResult();
-			BigInteger warningNode = (BigInteger) getSession().createSQLQuery(
-					"SELECT COUNT(*) FROM  add_node add_node, node_monitoring nm WHERE nm.NODE_IP = add_node.DEVICE_IP AND nm.NODE_STATUS = 'Warning' AND add_node.GROUP_NAME = '"
-							+ a[0] + "'")
-					.getSingleResult();
+		// Process the data in a single loop
+		for (Object[] row : data) {
+			JSONArray arrayData = new JSONArray();
+			String groupName = (String) row[0];
 
-			arrayData.put("<span style='color:blue' onclick=\"getTotalNodeSummaryDetails('" + a[0] + "')\">" + TotalNode
-					+ "</span>");
-			arrayData.put("<span style='color:lightgreen' onclick=\"getupNodeSummaryDetails('" + a[0] + "')\">" + upNode
-					+ "</span>");
-			arrayData.put("<span style='color:red' onclick=\"getdownNodeSummaryDetails('" + a[0] + "')\">" + downNode
-					+ "</span>");
-			arrayData.put("<span style='color:orange' onclick=\"getwarningNodeSummaryDetails('" + a[0] + "')\">"
-					+ warningNode + "</span>");
+			Long totalNodes = ((Number) row[1]).longValue();
+			Long upNodes = ((Number) row[2]).longValue();
+			Long downNodes = ((Number) row[3]).longValue();
+			Long warningNodes = ((Number) row[4]).longValue();
+
+			arrayData.put(groupName);
+			arrayData.put("<span style='color:blue' onclick=\"getTotalNodeSummaryDetails('" + groupName + "')\">"
+					+ totalNodes + "</span>");
+			arrayData.put("<span style='color:lightgreen' onclick=\"getupNodeSummaryDetails('" + groupName + "')\">"
+					+ upNodes + "</span>");
+			arrayData.put("<span style='color:red' onclick=\"getdownNodeSummaryDetails('" + groupName + "')\">"
+					+ downNodes + "</span>");
+			arrayData.put("<span style='color:orange' onclick=\"getwarningNodeSummaryDetails('" + groupName + "')\">"
+					+ warningNodes + "</span>");
+
 			arrayMain.put(arrayData);
 		}
+
 		return arrayMain;
 	}
 
@@ -1190,78 +1187,48 @@ public class InterfaceReportDaoImpl extends AbstractDao<Integer, AddNodeModel> i
 	}
 
 	public JSONArray interfaceSummaryGroupWise(String userScopeData) {
-		JSONArray arrayData = null;
 		JSONArray arrayMain = new JSONArray();
-		Query query = getSession().createSQLQuery("SELECT add_node.GROUP_NAME, COUNT(*) "
-				+ "FROM add_node add_node, interface_monitoring im " + "WHERE add_node.DEVICE_IP = im.NODE_IP " + "AND "
-				+ userScopeData + "\r\n" + "AND im.OPER_STATUS = 'up' " + "GROUP BY add_node.GROUP_NAME");
+
+		// Single consolidated query to fetch all required data with the additional
+		// condition
+		Query query = getSession().createSQLQuery("SELECT add_node.GROUP_NAME, "
+				+ "       COUNT(*) AS totalInterfaces, "
+				+ "       SUM(CASE WHEN im.INTERFACE_NAME = 'wan' AND im.Interface_IP_ICMP_Status = 'UP' THEN 1 ELSE 0 END) AS upWanInterfaces, "
+				+ "       SUM(CASE WHEN im.INTERFACE_NAME = 'wan' AND im.Interface_IP_ICMP_Status = 'Down' THEN 1 ELSE 0 END) AS downWanInterfaces, "
+				+ "       SUM(CASE WHEN im.INTERFACE_NAME = '3g-4g' AND im.Interface_IP_ICMP_Status = 'Up' THEN 1 ELSE 0 END) AS up4gInterfaces, "
+				+ "       SUM(CASE WHEN im.INTERFACE_NAME = '3g-4g' AND im.Interface_IP_ICMP_Status = 'Down' THEN 1 ELSE 0 END) AS down4gInterfaces "
+				+ "FROM add_node add_node " + "JOIN interface_monitoring im ON add_node.DEVICE_IP = im.NODE_IP "
+				+ "WHERE " + userScopeData + "  "
+				+ " AND im.INTERFACE_NAME IN ('wan', '3g-4g') " + " AND im.Intreface_IP_Monitoring = 'Yes' "
+				+ "GROUP BY add_node.GROUP_NAME");
+
 		List<Object[]> data = query.list();
-		for (Object[] a : data) {
-			arrayData = new JSONArray();
-			arrayData.put(a[0]);
 
-			BigInteger TotalInterface = (BigInteger) getSession().createSQLQuery(
-					"SELECT COUNT(*) FROM  add_node add_node, interface_monitoring im WHERE im.NODE_IP = add_node.DEVICE_IP AND add_node.GROUP_NAME = '"
-							+ a[0] + "' AND im.INTERFACE_NAME in ('wan','3g-4g') AND im.Intreface_IP_Monitoring='Yes'")
-					.getSingleResult();
+		// Process the data in a single loop
+		for (Object[] row : data) {
+			JSONArray arrayData = new JSONArray();
+			String groupName = (String) row[0];
+			Long totalInterfaces = ((Number) row[1]).longValue();
+			Long upWanInterfaces = ((Number) row[2]).longValue();
+			Long downWanInterfaces = ((Number) row[3]).longValue();
+			Long up4gInterfaces = ((Number) row[4]).longValue();
+			Long down4gInterfaces = ((Number) row[5]).longValue();
 
-//			BigInteger upWanInterface = (BigInteger) getSession().createSQLQuery(
-//					"SELECT COUNT(*) FROM  add_node add_node, interface_monitoring im WHERE im.NODE_IP = add_node.DEVICE_IP  AND im.INTERFACE_NAME like '%wan%' AND add_node.GROUP_NAME = '"
-//							+ a[0] + "' AND im.Intreface_IP_Monitoring='Yes' AND im.Interface_IP_ICMP_Status='UP'")
-//					.getSingleResult();
-			BigInteger upWanInterface = (BigInteger) getSession().createSQLQuery(
-					"SELECT COUNT(*) FROM  add_node add_node, interface_monitoring im,node_monitoring nm WHERE im.NODE_IP = add_node.DEVICE_IP  AND nm.NODE_IP = add_node.DEVICE_IP AND im.INTERFACE_NAME = 'wan' AND add_node.GROUP_NAME = '"
-							+ a[0] + "' AND im.Intreface_IP_Monitoring='Yes' AND im.Interface_IP_ICMP_Status='UP'")
-					.getSingleResult();
-
-			BigInteger downWanInterface = (BigInteger) getSession().createSQLQuery(
-					"SELECT COUNT(*) FROM  add_node add_node, interface_monitoring im,node_monitoring nm  WHERE im.NODE_IP = add_node.DEVICE_IP AND nm.NODE_IP = add_node.DEVICE_IP AND im.INTERFACE_NAME = 'wan' AND add_node.GROUP_NAME = '"
-							+ a[0] + "' AND im.Intreface_IP_Monitoring='Yes' AND im.Interface_IP_ICMP_Status='Down'")
-					.getSingleResult();
-
-			BigInteger up4gInterface = (BigInteger) getSession().createSQLQuery(
-					"SELECT COUNT(*) FROM  add_node add_node, interface_monitoring im,node_monitoring nm  WHERE im.NODE_IP = add_node.DEVICE_IP AND nm.NODE_IP = add_node.DEVICE_IP AND im.INTERFACE_NAME = '3g-4g' AND add_node.GROUP_NAME = '"
-							+ a[0] + "' AND im.Intreface_IP_Monitoring='Yes' AND im.Interface_IP_ICMP_Status='Up'")
-					.getSingleResult();
-
-			BigInteger down4gInterface = (BigInteger) getSession().createSQLQuery(
-					"SELECT COUNT(*) FROM  add_node add_node, interface_monitoring im,node_monitoring nm  WHERE im.NODE_IP = add_node.DEVICE_IP AND nm.NODE_IP = add_node.DEVICE_IP AND im.INTERFACE_NAME = '3g-4g' AND add_node.GROUP_NAME = '"
-							+ a[0] + "' AND im.Intreface_IP_Monitoring='Yes' AND im.Interface_IP_ICMP_Status='Down'")
-					.getSingleResult();
-
-//			BigInteger downWanInterfaceV2 = (BigInteger) getSession().createSQLQuery(
-//					"SELECT COUNT(*) FROM  add_node add_node, interface_monitoring im,node_monitoring nm  WHERE im.NODE_IP = add_node.DEVICE_IP AND nm.NODE_IP = add_node.DEVICE_IP AND im.INTERFACE_NAME = 'wan' AND add_node.GROUP_NAME = '"
-//							+ a[0] + "' AND im.Intreface_IP_Monitoring='Yes'   AND nm.NODE_STATUS='Down'")
-//					.getSingleResult();
-
-//			BigInteger down4gInterfaceV2 = (BigInteger) getSession().createSQLQuery(
-//					"SELECT COUNT(*) FROM  add_node add_node, interface_monitoring im,node_monitoring nm  WHERE im.NODE_IP = add_node.DEVICE_IP AND nm.NODE_IP = add_node.DEVICE_IP AND im.INTERFACE_NAME = '3g-4g' AND add_node.GROUP_NAME = '"
-//							+ a[0] + "' AND im.Intreface_IP_Monitoring='Yes'   AND nm.NODE_STATUS='Down'")
-//					.getSingleResult();
-
-			arrayData.put("<span style='color:blue' onclick=\"getInterfaceDetailsWan4g('" + a[0] + "', 'total')\">"
-					+ TotalInterface + "</span>");
-
-			arrayData.put("<span style='color:green' onclick=\"getInterfaceDetailsWan4g('" + a[0] + "', 'upWan')\">"
-					+ upWanInterface + "</span>");
-
-			arrayData.put("<span style='color:green' onclick=\"getInterfaceDetailsWan4g('" + a[0] + "', 'up4g')\">"
-					+ up4gInterface + "</span>");
-//			System.out.println("countsd::: " + a[0]);
-//			System.out.println("countsd::: " + downWanInterface + " " + downWanInterfaceV2);
-//			System.out.println("countsd::: " + downWanInterface + downWanInterfaceV2);
-
-//			BigInteger sumwandown = downWanInterface.add(downWanInterfaceV2);
-//			BigInteger sum3g4gdown = down4gInterface.add(down4gInterfaceV2);
-
-			arrayData.put("<span style='color:red' onclick=\"getInterfaceDetailsWan4g('" + a[0] + "', 'downWan')\">"
-					+ downWanInterface + "</span>");
-
-			arrayData.put("<span style='color:red' onclick=\"getInterfaceDetailsWan4g('" + a[0] + "', 'down4g')\">"
-					+ down4gInterface + "</span>");
+			arrayData.put(groupName);
+			arrayData.put("<span style='color:blue' onclick=\"getInterfaceDetailsWan4g('" + groupName + "', 'total')\">"
+					+ totalInterfaces + "</span>");
+			arrayData.put("<span style='color:green' onclick=\"getInterfaceDetailsWan4g('" + groupName
+					+ "', 'upWan')\">" + upWanInterfaces + "</span>");
+			arrayData.put("<span style='color:green' onclick=\"getInterfaceDetailsWan4g('" + groupName + "', 'up4g')\">"
+					+ up4gInterfaces + "</span>");
+			arrayData.put("<span style='color:red' onclick=\"getInterfaceDetailsWan4g('" + groupName
+					+ "', 'downWan')\">" + downWanInterfaces + "</span>");
+			arrayData.put("<span style='color:red' onclick=\"getInterfaceDetailsWan4g('" + groupName + "', 'down4g')\">"
+					+ down4gInterfaces + "</span>");
 
 			arrayMain.put(arrayData);
 		}
+
 		return arrayMain;
 	}
 
