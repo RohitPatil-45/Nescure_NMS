@@ -288,6 +288,7 @@ function generateGraph()
 
             Highcharts.stockChart('containervlx', {
                 chart: {
+					type: 'chartType',
                     events: {
                         load: function () {
                             this.setTitle(null, {
@@ -298,6 +299,7 @@ function generateGraph()
                     },
                     zoomType: 'x'
                 },
+                colors:['red', '#50B432'],
                 rangeSelector: {
                     buttons: [{
                             type: 'day',
@@ -330,6 +332,11 @@ function generateGraph()
                         text: 'Bandwidth Utilization'
                     }
                 },
+                plotOptions: {
+					column: {
+						stacking: 'normal'
+					}
+				},
 //                            title: {
 //                                text: 'Bandwidth Utilization'
 //                            },
@@ -340,6 +347,7 @@ function generateGraph()
                 series: [
                     {
                         name: 'Down Time Percent',
+                        type: 'column',
                        data: jsondata.downtimePercent,
 
 
@@ -359,6 +367,7 @@ function generateGraph()
                     },
                     {
                         name: 'UP Time Percent',
+                        type: 'column',
                        data: jsondata.uptimePercent,
 
                      //  data:[[1147651200000, 56], [1147737600000, 87], [1147824000000, 65.26], [1147910400000,98], [1147996800000, 12], [1148256000000, 63.38]],

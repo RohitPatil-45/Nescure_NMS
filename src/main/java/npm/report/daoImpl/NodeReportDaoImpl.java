@@ -548,19 +548,23 @@ public class NodeReportDaoImpl extends AbstractDao<Integer, AddNodeModel> implem
 			System.out.println("Query:" + ip_address);
 			SimpleDateFormat formatOfDateForChart = null;
 			formatOfDateForChart = new SimpleDateFormat("yyyy-M-dd HH:mm:ss");
-			Query q = getSession().createQuery(
-					"from LatencyHisotryModel where NODE_IP=:NODE_IP AND EVENT_TIMESTAMP BETWEEN :fromDate AND :toDate");
-			q.setParameter("NODE_IP", ip_address);
-			q.setParameter("fromDate", fromDateTimeStamp);
-			q.setParameter("toDate", toDateTimeStamp);
+//			Query q = getSession().createQuery(
+//					"from LatencyHisotryModel where NODE_IP=:NODE_IP AND EVENT_TIMESTAMP BETWEEN :fromDate AND :toDate");
+//			q.setParameter("NODE_IP", ip_address);
+//			q.setParameter("fromDate", fromDateTimeStamp);
+//			q.setParameter("toDate", toDateTimeStamp);
+			
+			Query q = getSession().createSQLQuery("select device_ip, latency, packetdrop, timestamp from device_status_latency_history"
+					+ " where device_ip = '"+ip_address+"' and timestamp between '"+fromDateTimeStamp+"' and '"+toDateTimeStamp+"'"
+							+ " and working_hour_flag = 1");
 			int srno = 0;
-			List<LatencyHisotryModel> dataList = q.list();
-			for (LatencyHisotryModel data : dataList) {
+			List<Object[]> dataList = q.list();
+			for (Object[] data : dataList) {
 				srno = srno + 1;
 
-				double avg_latency = data.getAVG_LATENCY();
-				double pkt_loss = data.getPACKET_LOSS();
-				Timestamp time = data.getEVENT_TIMESTAMP();
+				double avg_latency = Double.valueOf(data[1].toString());
+				double pkt_loss = Double.valueOf(data[2].toString());
+				Timestamp time = (Timestamp) data[3];
 				Date cDate = time;
 				String s = cDate.toString();
 				String[] arrOfStr = s.split(" ");
@@ -1598,16 +1602,52 @@ public class NodeReportDaoImpl extends AbstractDao<Integer, AddNodeModel> implem
 		JSONArray arrayList = new JSONArray();
 
 		try {
-			List<Object[]> li = getSession().createSQLQuery(
-					"SELECT NODE_IP, ROUND(avg(UPTIME_PERCENT),2), ROUND(avg(DOWNTIME_PERCENT),2) FROM node_availability "
-							+ "WHERE NODE_IP IN ('" + ip_data
-							+ "') AND EVENT_TIMESTAMP BETWEEN :fromDate AND :toDate group by NODE_IP")
-					.setParameter("fromDate", from_date).setParameter("toDate", to_date).list();
+			
+			String query = " SELECT \r\n" + "    device_ip,\r\n"
+					+ "     SUM(CASE WHEN status = 'Up' THEN total_duration_seconds ELSE 0 END)/ 3600.0 AS uptime_seconds,\r\n"
+					+ "     SUM(CASE WHEN status = 'Down' THEN total_duration_seconds ELSE 0 END)/ 3600.0 AS downtime_seconds\r\n"
+					+ "FROM (\r\n" + "    SELECT \r\n" + "        device_ip,\r\n" + "        status,\r\n"
+					+ "COALESCE(\r\n" + "            LEAD(timestamp_epoch) OVER (\r\n"
+					+ "                PARTITION BY device_ip, DATE(FROM_UNIXTIME(timestamp_epoch)) \r\n"
+					+ "                ORDER BY timestamp_epoch\r\n" + "            ) - timestamp_epoch, \r\n"
+					+ "            0\r\n" + "        ) AS total_duration_seconds"
+					+ "    FROM device_status_latency_history\r\n"
+					+ "    WHERE working_hour_flag=1 AND device_ip in ('"+ip_data+"') AND timestamp BETWEEN '" + from_date + "' AND '" + to_date
+					+ "' \r\n" + ") AS durations\r\n" + "GROUP BY device_ip;\r\n" + "";
+
+			Query q = getSession().createSQLQuery(query);
+			List<Object[]> li = q.list();
 			for (Object[] data : li) {
 				JSONArray array = new JSONArray();
+				Long uptime = null;
+				Long downtime = null;
+
+				if (data[1].toString().trim().matches("\\d+\\.\\d+")) { // Check if the string is a valid decimal number
+					double value = Double.parseDouble(data[1].toString().trim());
+					uptime = Math.round(value);
+				} else {
+					// Handle invalid input
+					uptime = Long.parseLong(data[1].toString().trim());
+
+				}
+				if (data[2].toString().trim().matches("\\d+\\.\\d+")) { // Check if the string is a valid decimal number
+					double value = Double.parseDouble(data[2].toString().trim());
+					downtime = Math.round(value);
+				} else {
+					// Handle invalid input
+
+					downtime = Long.parseLong(data[2].toString().trim());
+				}
+
+				Long totalTime = uptime + downtime;
+
+				// Calculate Uptime (%) and Downtime (%)
+				double uptimePercentage = (uptime * 100.0) / totalTime;
+				double downtimePercentage = (downtime * 100.0) / totalTime;
+				
 				array.put(data[0]);
-				array.put(data[1]);
-				array.put(data[2]);
+				array.put(uptimePercentage);
+				array.put(downtimePercentage);
 				arrayList.put(array);
 			}
 
@@ -1626,9 +1666,9 @@ public class NodeReportDaoImpl extends AbstractDao<Integer, AddNodeModel> implem
 
 		try {
 			List<Object[]> li = getSession().createSQLQuery(
-					"SELECT INTERFACE_NAME, ROUND(avg(UPTIME_PERCENT),2), ROUND(avg(DOWNTIME_PERCENT),2) FROM interface_availability "
+					"SELECT IP_INTERFACE, ROUND(avg(UPTIME_PERCENT),2), ROUND(avg(DOWNTIME_PERCENT),2) FROM interface_availability "
 							+ "WHERE NODE_IP IN ('" + ip_data
-							+ "') AND EVENT_TIMESTAMP BETWEEN :fromDate AND :toDate group by INTERFACE_NAME")
+							+ "') AND EVENT_TIMESTAMP BETWEEN :fromDate AND :toDate group by IP_INTERFACE")
 					.setParameter("fromDate", from_date).setParameter("toDate", to_date).list();
 			System.out.println("list data= " + li);
 			for (Object[] data : li) {

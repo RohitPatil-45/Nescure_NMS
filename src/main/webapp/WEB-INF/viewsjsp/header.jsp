@@ -786,15 +786,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
 										<!-- 										<li><a tabindex="-1" -->
 										<%-- 											href="<%=request.getContextPath()%>/nodeReport/nodeHealthHistoryGraphForm" --%>
 										<!-- 											class="dropdown-item">Node Health History Graph</a></li> -->
-										<li><a tabindex="-1"
+										<%--  <li><a tabindex="-1"
 											href="<%=request.getContextPath()%>/nodeReport/nodeAvailabilityGraphForm"
-											class="dropdown-item">Node Availability Graph</a></li>
+											class="dropdown-item">Node Availability Graph</a></li> --%>
 										<li><a tabindex="-1"
 											href="<%=request.getContextPath()%>/nodeReport/nodeAvailabilityAverageGraphForm"
-											class="dropdown-item">Node Availability Average Graph</a></li>
-										<li><a tabindex="-1"
+											class="dropdown-item">Node Availability Graph(AVG)</a></li>
+										<%-- <li><a tabindex="-1"
 											href="<%=request.getContextPath()%>/nodeReport/latencyHisotryGraphForm"
-											class="dropdown-item">Average Latency Graph</a></li>
+											class="dropdown-item">Average Latency Graph</a></li> --%>
 										<li><a tabindex="-1"
 											href="<%=request.getContextPath()%>/nodeReport/latencyGraphForm"
 											class="dropdown-item">Latency Graph</a></li>
@@ -813,16 +813,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
 										class="dropdown-menu border-0 shadow">
 										<li><a tabindex="-1"
 											href="<%=request.getContextPath()%>/nodeReport/interfaceBandwidthHistoryGraphForm"
-											class="dropdown-item">Average Interface Bandwidth History
-												Graph</a></li>
+											class="dropdown-item">Link Bandwidth Graph</a></li>
 
 										<li><a tabindex="-1"
 											href="<%=request.getContextPath()%>/nodeReport/interfaceAvailabilityGraphForm"
-											class="dropdown-item">Interface Availability Graph</a></li>
+											class="dropdown-item">Link Availability Graph</a></li>
 										<li><a tabindex="-1"
 											href="<%=request.getContextPath()%>/nodeReport/interfaceAvailabilityAverageGraphForm"
-											class="dropdown-item">Interface Availability Average
-												Graph</a></li>
+											class="dropdown-item">Link Availability Graph(AVG)</a></li>
 									</ul></li>
 								<%
 									}
